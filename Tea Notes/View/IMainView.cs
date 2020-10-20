@@ -15,5 +15,7 @@ namespace Tea_Notes
         event Action<int> DeleteNote;
 
         event Action<string> AddNote;
+
+        event Action<string, int> ChangeNote;
     }
 }

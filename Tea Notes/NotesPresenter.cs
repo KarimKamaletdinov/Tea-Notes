@@ -15,11 +15,30 @@ namespace Tea_Notes
         {
             Repository = new FileNoteRepository(new FileUserRepository().Get());
 
+            view.DeleteNote += DeleteNote;
+
+            view.AddNote += AddNote;
+
+            view.ChangeNote += ChangeNote;
+        }
+
+        private void ChangeNote(string arg1, int arg2)
+        {
+            DTOs[arg2].Content = arg1;
+
+            Repository.Save(DTOs[arg2]);
+        }
+
+        public void UpdateView(IMainView view)
+        {
             DTOs = Repository.GetAll().ToList();
 
             view.Notes = DTOs;
+        }
 
-            view.DeleteNote += DeleteNote;
+        private void AddNote(string obj)
+        {
+            Repository.Add(new NoteDTO() { Name = obj });
         }
 
         private void DeleteNote(int obj)

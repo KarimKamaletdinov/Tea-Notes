@@ -13,5 +13,6 @@ namespace Tea_Notes
         NoteDTO[] GetAll();
 
         void Delete(NoteDTO dto);
+        void Add(NoteDTO noteDTO);
     }
 }

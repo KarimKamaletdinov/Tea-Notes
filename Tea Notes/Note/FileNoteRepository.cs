@@ -38,7 +38,13 @@ namespace Tea_Notes
             }
 
             return l.ToArray();
-        }           
+        }
+
+        public void Add(NoteDTO dto)
+        {
+            File.WriteAllText(User.Folder + "\\" + GetMaxId() + ".nt", dto.Name + '¨'
+              + dto.Content + '¨' + dto.Folder);
+        }
 
         private NoteDTO ParseDTO(string f)
         {
@@ -54,6 +60,21 @@ namespace Tea_Notes
             }
 
             throw new Exception("Ошибка чтения");
+        }
+
+        private int GetMaxId()
+        {
+            var id = 0;
+
+            foreach(var n in Directory.GetFiles(User.Folder))
+            {
+                if(int.Parse(n.Replace(User.Folder + "\\", "").Replace(".nt", "")) >= id)
+                {
+                    id = int.Parse(n.Replace(User.Folder + "\\", "").Replace(".nt", "")) + 1;
+                }
+            }
+
+            return id;
         }
     }
 }

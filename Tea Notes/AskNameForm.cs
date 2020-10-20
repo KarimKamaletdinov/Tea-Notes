@@ -14,9 +14,11 @@ namespace Tea_Notes
     {
         public event Action<string> OK;
 
-        public AskNameForm()
+        public AskNameForm(string name)
         {
             InitializeComponent();
+
+            Text = name;
         }
 
         private void button1_Click(object sender, EventArgs e)
