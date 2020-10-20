@@ -20,6 +20,15 @@ namespace Tea_Notes
             view.AddNote += AddNote;
 
             view.ChangeNote += ChangeNote;
+
+            view.RenameNote += View_RenameNote;
+        }
+
+        private void View_RenameNote(string arg1, int arg2)
+        {
+            DTOs[arg2].Name = arg1;
+
+            Repository.Save(DTOs[arg2]);
         }
 
         private void ChangeNote(string arg1, int arg2)

@@ -22,6 +22,8 @@ namespace Tea_Notes
 
         public event Action<string, int> ChangeNote;
 
+        public event Action<string, int> RenameNote;
+
         public Form1()
         {
             InitializeComponent();
@@ -115,6 +117,7 @@ namespace Tea_Notes
             if(e.KeyCode == Keys.Delete)
             {
                 var l = GetNodes(treeView1.Nodes);
+
                 if (l.Count > 0 && treeView1.SelectedNode != null)
                 {
                     for (var i = 0; i < l.Count; i++)
@@ -176,6 +179,58 @@ namespace Tea_Notes
                     }
 
                     i++;
+                }
+            }
+        }
+
+        private void toolStripMenuItem2_Click(object sender, EventArgs e)
+        {
+            if (treeView1.SelectedNode != null)
+            {
+                var n = new AskNameForm("Переименовать");
+
+                n.Show();
+
+                n.OK += N_OK;
+            }
+        }
+
+        private void N_OK(string obj)
+        {
+            if(treeView1.SelectedNode != null)
+            {
+                var i = 0;
+
+                foreach(var n in GetNodes(treeView1.Nodes))
+                {
+                    if(n == treeView1.SelectedNode)
+                    {
+                        RenameNote(obj, i);
+
+                        UpdateView();
+
+                        return;
+                    }
+
+                    i++;
+                }
+            }
+        }
+
+        private void toolStripMenuItem3_Click(object sender, EventArgs e)
+        {
+            var l = GetNodes(treeView1.Nodes);
+
+            if (l.Count > 0 && treeView1.SelectedNode != null)
+            {
+                for (var i = 0; i < l.Count; i++)
+                {
+                    if (l[i] == treeView1.SelectedNode)
+                    {
+                        DeleteNote(i);
+
+                        UpdateView();
+                    }
                 }
             }
         }
