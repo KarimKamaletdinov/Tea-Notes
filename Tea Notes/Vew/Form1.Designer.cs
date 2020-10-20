@@ -63,7 +63,6 @@
             this.treeView1.ItemHeight = 18;
             this.treeView1.Location = new System.Drawing.Point(0, 0);
             this.treeView1.Name = "treeView1";
-            this.treeView1.ShowLines = false;
             this.treeView1.ShowRootLines = false;
             this.treeView1.Size = new System.Drawing.Size(238, 520);
             this.treeView1.TabIndex = 0;

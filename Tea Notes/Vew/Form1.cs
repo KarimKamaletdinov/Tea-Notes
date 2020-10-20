@@ -29,26 +29,51 @@ namespace Tea_Notes
 
             foreach(var note in Notes)
             {
-                
+                if (note.Folder != "")
+                {
+                    if (FolderCreated(note.Folder, out var t))
+                    {
+                        t.Nodes.Add(note.Name);
+                    }
 
-                treeView1.Nodes.Add(note.Name);
+                    else
+                    {
+                        var f = new TreeNode(note.Folder);
+                        f.Name = "Folder";
+                        f.Nodes.Add(note.Name);
+                        treeView1.Nodes.Add(f);
+                    }
+                }
+                else
+                {
+                    treeView1.Nodes.Add(note.Name);
+                }
+            }
+
+            bool FolderCreated(string fn, out TreeNode t)
+            {
+                foreach(var n in treeView1.Nodes)
+                {
+                    if((n as TreeNode).Name == "Folder" &&
+                        (n as TreeNode).Text == fn)
+                    {
+                        t = n as TreeNode;
+
+                        return true;
+                    }
+                }
+
+                t = null;
+
+                return false;
             }
         }
 
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            if (e.Node.NodeFont.Size != 20)
+            if (e.Node.Name != "Folder")
             {
-                var l = new List<TreeNode>();
-
-                foreach (var n in treeView1.Nodes)
-                {
-                    if ((n as TreeNode).Nodes.Count == 0)
-                    {
-                        l.Add(n as TreeNode);
-                    }
-                }
-
+                var l = CheckNodes(treeView1.Nodes);
 
                 for (var i = 0; i < l.Count; i++)
                 {
@@ -57,6 +82,29 @@ namespace Tea_Notes
                         richTextBox1.Text = Notes[i].Content;
                     }
                 }
+            }
+
+            else
+            {
+                richTextBox1.Text = "";
+            }
+
+            List<TreeNode> CheckNodes(TreeNodeCollection collection)
+            {
+                var l = new List<TreeNode>();
+
+                foreach(var n in collection)
+                {
+                    if((n as TreeNode).Name == "Folder")
+                    {
+                        l.AddRange (CheckNodes((n as TreeNode).Nodes));
+                    }
+                    else
+                    {
+                        l.Add(n as TreeNode);
+                    }
+                }
+                return l;
             }
         }
 
