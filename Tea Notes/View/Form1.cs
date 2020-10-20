@@ -16,12 +16,15 @@ namespace Tea_Notes
 
         public NotesPresenter Presenter { get; set; } = new NotesPresenter();
 
-        public List<FolderDTO> Folders { get; set; } = new List<FolderDTO>();
+        public event Action<int> DeleteNote;
+
+        public event Action<string> AddNote;
+
 
         public Form1()
         {
             InitializeComponent();
-        }     
+        }
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -33,7 +36,7 @@ namespace Tea_Notes
                 {
                     if (FolderCreated(note.Folder, out var t))
                     {
-                        t.Nodes.Add(note.Name);
+                        t.Nodes.Add(new TreeNode(note.Name));
                     }
 
                     else
@@ -89,26 +92,57 @@ namespace Tea_Notes
                 richTextBox1.Text = "";
             }
 
-            List<TreeNode> CheckNodes(TreeNodeCollection collection)
-            {
-                var l = new List<TreeNode>();
-
-                foreach(var n in collection)
-                {
-                    if((n as TreeNode).Name == "Folder")
-                    {
-                        l.AddRange (CheckNodes((n as TreeNode).Nodes));
-                    }
-                    else
-                    {
-                        l.Add(n as TreeNode);
-                    }
-                }
-                return l;
-            }
+      
         }
 
         private void treeView1_AfterCheck(object sender, TreeViewEventArgs e)
+        {
+            
+        }
+
+        private void treeView1_KeyUp(object sender, KeyEventArgs e)
+        {
+            if(e.KeyCode == Keys.Delete)
+            {
+                var l = CheckNodes(treeView1.Nodes);
+                if (l.Count > 0 && treeView1.SelectedNode != null)
+                {
+                    for (var i = 0; i < l.Count; i++)
+                    {
+                        if (l[i] == treeView1.SelectedNode)
+                        {
+                            DeleteNote(i);
+                            treeView1.Nodes.Remove(treeView1.SelectedNode);
+                        }
+                    }
+                }
+            }
+        }
+
+        private static List<TreeNode> CheckNodes(TreeNodeCollection collection)
+        {
+            var l = new List<TreeNode>();
+
+            foreach (var n in collection)
+            {
+                if ((n as TreeNode).Name == "Folder")
+                {
+                    l.AddRange(CheckNodes((n as TreeNode).Nodes));
+                }
+                else
+                {
+                    l.Add(n as TreeNode);
+                }
+            }
+            return l;
+        }
+
+        private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void toolStripTextBox1_Click(object sender, EventArgs e)
         {
             
         }

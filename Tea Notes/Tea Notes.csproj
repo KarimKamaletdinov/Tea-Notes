@@ -49,26 +49,32 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Folder\FileFolderRepository.cs" />
-    <Compile Include="Folder\FolderDTO.cs" />
-    <Compile Include="Folder\IFolderRepository.cs" />
+    <Compile Include="AskNameForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AskNameForm.Designer.cs">
+      <DependentUpon>AskNameForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="User\FileUserRepository.cs" />
     <Compile Include="User\IUserRepository.cs" />
     <Compile Include="User\UserDTO.cs" />
     <Compile Include="Note\FileNoteRepository.cs" />
-    <Compile Include="Vew\Form1.cs">
+    <Compile Include="View\Form1.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Vew\Form1.Designer.cs">
+    <Compile Include="View\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Vew\IMainView.cs" />
+    <Compile Include="View\IMainView.cs" />
     <Compile Include="Note\INoteRepository.cs" />
     <Compile Include="Note\NoteDTO.cs" />
     <Compile Include="NotesPresenter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Vew\Form1.resx">
+    <EmbeddedResource Include="AskNameForm.resx">
+      <DependentUpon>AskNameForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">

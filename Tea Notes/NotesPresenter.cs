@@ -18,6 +18,15 @@ namespace Tea_Notes
             DTOs = Repository.GetAll().ToList();
 
             view.Notes = DTOs;
+
+            view.DeleteNote += DeleteNote;
+        }
+
+        private void DeleteNote(int obj)
+        {
+            Repository.Delete(DTOs[obj]);
+
+            DTOs.RemoveAt(obj);
         }
     }
 }

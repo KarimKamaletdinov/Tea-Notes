@@ -40,7 +40,7 @@ namespace Tea_Notes
             return l.ToArray();
         }           
 
-        private static NoteDTO ParseDTO(string f)
+        private NoteDTO ParseDTO(string f)
         {
             if (File.ReadAllText(f).Split(new char[] { '¨' }).Length == 3)
             {
@@ -49,6 +49,7 @@ namespace Tea_Notes
                     Name = File.ReadAllText(f).Split(new char[] { '¨' })[0],
                     Content = File.ReadAllText(f).Split(new char[] { '¨' })[1],
                     Folder = File.ReadAllText(f).Split(new char[] { '¨' })[2],
+                    Id = int.Parse(f.Replace(User.Folder + "\\", "").Replace(".nt", ""))
                 };
             }
 
