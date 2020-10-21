@@ -10,6 +10,8 @@ namespace Tea_Notes
     {
         List<NoteDTO> Notes { get; set; }
 
+        List<FolderDTO> Folders { get; set; }
+
         NotesPresenter Presenter { get; set; }
 
         event Action<int> DeleteNote;
@@ -19,5 +21,12 @@ namespace Tea_Notes
         event Action<string, int> ChangeNote;
 
         event Action<string, int> RenameNote;
+
+
+        event Action<int> DeleteFolder;
+
+        event Action<string> AddFolder;
+
+        event Action<string, int> RenameFolder;
     }
 }

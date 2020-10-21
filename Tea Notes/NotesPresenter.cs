@@ -8,12 +8,19 @@ namespace Tea_Notes
 {
     class NotesPresenter
     {
-        private INoteRepository Repository;
-        private List<NoteDTO> DTOs = new List<NoteDTO>();
+        private INoteRepository NoteRepository;
+
+        private IFolderRepository FolderRepository;
+
+        private List<NoteDTO> NoteDTOs = new List<NoteDTO>();
+
+        private List<FolderDTO> FolderDTOs = new List<FolderDTO>();
 
         public void Start(IMainView view)
         {
-            Repository = new FileNoteRepository(new FileUserRepository().Get());
+            NoteRepository = new FileNoteRepository(new FileUserRepository().Get());
+
+            FolderRepository = new FileFolderRepository(new FileUserRepository().Get());
 
             view.DeleteNote += DeleteNote;
 
@@ -21,40 +28,69 @@ namespace Tea_Notes
 
             view.ChangeNote += ChangeNote;
 
-            view.RenameNote += View_RenameNote;
-        }
+            view.RenameNote += RenameNote;
 
-        private void View_RenameNote(string arg1, int arg2)
-        {
-            DTOs[arg2].Name = arg1;
+            view.DeleteFolder += DeleteFolder;
 
-            Repository.Save(DTOs[arg2]);
-        }
+            view.AddFolder += AddFolder;
 
-        private void ChangeNote(string arg1, int arg2)
-        {
-            DTOs[arg2].Content = arg1;
-
-            Repository.Save(DTOs[arg2]);
+            view.RenameFolder += RenameFolder;
         }
 
         public void UpdateView(IMainView view)
         {
-            DTOs = Repository.GetAll().ToList();
+            NoteDTOs = NoteRepository.GetAll().ToList();
 
-            view.Notes = DTOs;
+            view.Notes = NoteDTOs;
+
+
+            FolderDTOs = FolderRepository.GetAll().ToList();
+
+            view.Folders = FolderDTOs;
+        }
+
+
+
+        private void RenameNote(string arg1, int arg2)
+        {
+            NoteDTOs[arg2].Name = arg1;
+
+            NoteRepository.Save(NoteDTOs[arg2]);
+        }
+
+        private void ChangeNote(string arg1, int arg2)
+        {
+            NoteDTOs[arg2].Content = arg1;
+
+            NoteRepository.Save(NoteDTOs[arg2]);
         }
 
         private void AddNote(string obj)
         {
-            Repository.Add(new NoteDTO() { Name = obj });
+            NoteRepository.Add(new NoteDTO() { Name = obj });
         }
 
         private void DeleteNote(int obj)
         {
-            Repository.Delete(DTOs[obj]);
+            NoteRepository.Delete(NoteDTOs[obj]);
 
-            DTOs.RemoveAt(obj);
+            NoteDTOs.RemoveAt(obj);
+        }
+
+
+        private void DeleteFolder(int obj)
+        {
+            
+        }
+
+        private void AddFolder(string obj)
+        {
+            
+        }
+
+        private void RenameFolder(string arg1, int arg2)
+        {
+            throw new NotImplementedException();
         }
     }
 }

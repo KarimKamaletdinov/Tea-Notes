@@ -19,7 +19,7 @@ namespace Tea_Notes
         public void Save(NoteDTO dto)
         {
             File.WriteAllText(User.Folder + "\\" + dto.Id + ".nt", dto.Name + '¨' 
-                + dto.Content + '¨' + dto.Folder);
+                + dto.Content + '¨' + dto.FolderId);
         }
 
         public void Delete(NoteDTO dto)
@@ -43,7 +43,7 @@ namespace Tea_Notes
         public void Add(NoteDTO dto)
         {
             File.WriteAllText(User.Folder + "\\" + GetMaxId() + ".nt", dto.Name + '¨'
-              + dto.Content + '¨' + dto.Folder);
+              + dto.Content + '¨' + dto.FolderId);
         }
 
         private NoteDTO ParseDTO(string f)
@@ -54,7 +54,7 @@ namespace Tea_Notes
                 {
                     Name = File.ReadAllText(f).Split(new char[] { '¨' })[0],
                     Content = File.ReadAllText(f).Split(new char[] { '¨' })[1],
-                    Folder = File.ReadAllText(f).Split(new char[] { '¨' })[2],
+                    FolderId = int.Parse(File.ReadAllText(f).Split(new char[] { '¨' })[2]),
                     Id = int.Parse(f.Replace(User.Folder + "\\", "").Replace(".nt", ""))
                 };
             }

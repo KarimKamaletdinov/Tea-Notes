@@ -14,6 +14,8 @@ namespace Tea_Notes
     {
         public List<NoteDTO> Notes { get; set; } = new List<NoteDTO>();
 
+        public List<FolderDTO> Folders { get; set; }
+
         public NotesPresenter Presenter { get; set; } = new NotesPresenter();
 
         public event Action<int> DeleteNote;
@@ -23,6 +25,14 @@ namespace Tea_Notes
         public event Action<string, int> ChangeNote;
 
         public event Action<string, int> RenameNote;
+
+
+        public event Action<int> DeleteFolder;
+
+        public event Action<string> AddFolder;
+
+        public event Action<string, int> RenameFolder;
+
 
         public Form1()
         {
@@ -44,67 +54,97 @@ namespace Tea_Notes
 
             Presenter.UpdateView(this);
 
-            foreach (var note in Notes)
-            {
-                if (note.Folder != "")
-                {
-                    if (FolderCreated(note.Folder, out var t))
-                    {
-                        t.Nodes.Add(new TreeNode(note.Name));
-                    }
 
-                    else
-                    {
-                        var f = new TreeNode(note.Folder);
-                        f.Name = "Folder";
-                        f.Nodes.Add(note.Name);
-                        treeView1.Nodes.Add(f);
-                    }
+            var folders = Folders.ToList();
+
+            while(folders.Count > 0)
+            {
+                var f = folders[0];
+
+                AddFolder(treeView1.Nodes, f);
+
+                folders.Remove(f);
+            }
+
+            //var notes = Folders.ToList();
+
+            //while (folders.Count > 0)
+            //{
+            //    var f = folders[0];
+
+            //    AddFolder(treeView1.Nodes, f);
+
+            //    folders.Remove(f);
+            //}
+
+            void AddFolder(TreeNodeCollection collection, FolderDTO f)
+            {
+                if (f.ParentId == 0)
+                {
+                    treeView1.Nodes.Add(new TreeNode(f.Name) {Name = f.Id.ToString(), 
+                        ImageIndex = 0 });
                 }
+
                 else
                 {
-                    treeView1.Nodes.Add(note.Name);
+                    foreach (var n in collection)
+                    {
+                        if ((n as TreeNode).Name == f.ParentId.ToString())
+                        {
+                            (n as TreeNode).Nodes.Add(f.Id.ToString(), f.Name);
+
+                            return;
+                        }
+                    }
+
+                    AddFolder(collection, Folders.Find(x => x.Id == f.ParentId));
                 }
             }
 
-            bool FolderCreated(string fn, out TreeNode t)
-            {
-                foreach (var n in treeView1.Nodes)
-                {
-                    if ((n as TreeNode).Name == "Folder" &&
-                        (n as TreeNode).Text == fn)
-                    {
-                        t = n as TreeNode;
 
-                        return true;
-                    }
+            void AddNote(TreeNodeCollection collection, FolderDTO f)
+            {
+                if (f.ParentId == 0)
+                {
+                    treeView1.Nodes.Add(f.Id.ToString(), f.Name);
                 }
 
-                t = null;
+                else
+                {
+                    foreach (var n in collection)
+                    {
+                        if ((n as TreeNode).Name == f.ParentId.ToString())
+                        {
+                            (n as TreeNode).Nodes.Add(f.Id.ToString(), f.Name);
 
-                return false;
+                            return;
+                        }
+                    }
+
+                    AddFolder(collection, Folders.Find(x => x.Id == f.ParentId));
+                }
             }
         }
 
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            if (e.Node.Name != "Folder")
-            {
-                var l = GetNodes(treeView1.Nodes);
+            //if (e.Node.Name != "Folder")
+            //{
+            //    var l = GetNodes(treeView1.Nodes);
 
-                for (var i = 0; i < l.Count; i++)
-                {
-                    if (l[i] == e.Node)
-                    {
-                        richTextBox1.Text = Notes[i].Content;
-                    }
-                }
-            }
+            //    for (var i = 0; i < l.Count; i++)
+            //    {
+            //        if (l[i] == e.Node)
+            //        {
+            //            richTextBox1.Text = Notes[i].Content;
+            //        }
+            //    }
+            //}
 
-            else
-            {
-                richTextBox1.Text = "";
-            }    
+            //else
+            //{
+            //    richTextBox1.Text = "";
+            //}    
         }
 
         private void treeView1_AfterCheck(object sender, TreeViewEventArgs e)

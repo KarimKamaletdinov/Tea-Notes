@@ -14,6 +14,6 @@ namespace Tea_Notes
 
         public string Content { get; set; }
 
-        public string Folder { get; set; }
+        public int FolderId { get; set; }
     }
 }

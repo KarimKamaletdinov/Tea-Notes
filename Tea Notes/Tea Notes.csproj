@@ -55,6 +55,9 @@
     <Compile Include="AskNameForm.Designer.cs">
       <DependentUpon>AskNameForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Folder\FileFolderReposytory.cs" />
+    <Compile Include="Folder\FolderDTO.cs" />
+    <Compile Include="Folder\IFolderRepository.cs" />
     <Compile Include="User\FileUserRepository.cs" />
     <Compile Include="User\IUserRepository.cs" />
     <Compile Include="User\UserDTO.cs" />
