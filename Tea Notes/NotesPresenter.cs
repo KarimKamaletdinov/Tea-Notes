@@ -65,9 +65,9 @@ namespace Tea_Notes
             NoteRepository.Save(NoteDTOs[arg2]);
         }
 
-        private void AddNote(string obj)
+        private void AddNote(string obj, int i)
         {
-            NoteRepository.Add(new NoteDTO() { Name = obj });
+            NoteRepository.Add(new NoteDTO() { Name = obj , FolderId = i});
         }
 
         private void DeleteNote(int obj)
@@ -80,17 +80,19 @@ namespace Tea_Notes
 
         private void DeleteFolder(int obj)
         {
-            
+            FolderRepository.Delete(FolderDTOs[obj]);
+
+            FolderDTOs.RemoveAt(obj);
         }
 
-        private void AddFolder(string obj)
+        private void AddFolder(string obj, int i)
         {
-            
+            FolderRepository.Add(new FolderDTO() { Name = obj, ParentId = i });
         }
 
         private void RenameFolder(string arg1, int arg2)
         {
-            throw new NotImplementedException();
+            
         }
     }
 }

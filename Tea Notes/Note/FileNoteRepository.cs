@@ -68,9 +68,12 @@ namespace Tea_Notes
 
             foreach(var n in Directory.GetFiles(User.Folder))
             {
-                if(int.Parse(n.Replace(User.Folder + "\\", "").Replace(".nt", "")) >= id)
+                if (!n.EndsWith(".fd"))
                 {
-                    id = int.Parse(n.Replace(User.Folder + "\\", "").Replace(".nt", "")) + 1;
+                    if (int.Parse(n.Replace(User.Folder + "\\", "").Replace(".nt", "")) >= id)
+                    {
+                        id = int.Parse(n.Replace(User.Folder + "\\", "").Replace(".nt", "")) + 1;
+                    }
                 }
             }
 

@@ -49,5 +49,29 @@ namespace Tea_Notes
                 Id = int.Parse(f.Replace("Notes\\", "").Replace(".fd", ""))
             };
         }
+
+        public void Add(FolderDTO dto)
+        {
+            File.WriteAllText(User.Folder + "\\" + GetMaxId() + ".fd", dto.Name +
+              "¨" + dto.ParentId);
+        }
+
+        private int GetMaxId()
+        {
+            var id = 0;
+
+            foreach (var n in Directory.GetFiles(User.Folder))
+            {
+                if (!n.EndsWith(".nt"))
+                {
+                    if (int.Parse(n.Replace(User.Folder + "\\", "").Replace(".fd", "")) >= id)
+                    {
+                        id = int.Parse(n.Replace(User.Folder + "\\", "").Replace(".fd", "")) + 1;
+                    }
+                }
+            }
+
+            return id;
+        }
     }
 }

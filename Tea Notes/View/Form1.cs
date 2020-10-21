@@ -20,7 +20,7 @@ namespace Tea_Notes
 
         public event Action<int> DeleteNote;
 
-        public event Action<string> AddNote;
+        public event Action<string, int> AddNote;
 
         public event Action<string, int> ChangeNote;
 
@@ -29,7 +29,7 @@ namespace Tea_Notes
 
         public event Action<int> DeleteFolder;
 
-        public event Action<string> AddFolder;
+        public event Action<string, int> AddFolder;
 
         public event Action<string, int> RenameFolder;
 
@@ -66,23 +66,26 @@ namespace Tea_Notes
                 folders.Remove(f);
             }
 
-            //var notes = Folders.ToList();
+            var notes = Notes.ToList();
 
-            //while (folders.Count > 0)
-            //{
-            //    var f = folders[0];
+            while (notes.Count > 0)
+            {
+                var f = notes[0];
 
-            //    AddFolder(treeView1.Nodes, f);
+                AddNote(treeView1.Nodes, f);
 
-            //    folders.Remove(f);
-            //}
+                notes.Remove(f);
+            }
+
+            treeView1.ExpandAll();
+
 
             void AddFolder(TreeNodeCollection collection, FolderDTO f)
             {
                 if (f.ParentId == 0)
                 {
                     treeView1.Nodes.Add(new TreeNode(f.Name) {Name = f.Id.ToString(), 
-                        ImageIndex = 0 });
+                        ImageIndex = 1, SelectedImageIndex = 1 });
                 }
 
                 else
@@ -91,7 +94,9 @@ namespace Tea_Notes
                     {
                         if ((n as TreeNode).Name == f.ParentId.ToString())
                         {
-                            (n as TreeNode).Nodes.Add(f.Id.ToString(), f.Name);
+                            (n as TreeNode).Nodes.Add(new TreeNode(f.Name) {
+                                Name = f.Id.ToString(), 
+                                ImageIndex = 1, SelectedImageIndex = 1 });
 
                             return;
                         }
@@ -102,49 +107,49 @@ namespace Tea_Notes
             }
 
 
-            void AddNote(TreeNodeCollection collection, FolderDTO f)
+            void AddNote(TreeNodeCollection collection, NoteDTO f)
             {
-                if (f.ParentId == 0)
+                if (f.FolderId == 0)
                 {
-                    treeView1.Nodes.Add(f.Id.ToString(), f.Name);
+                    treeView1.Nodes.Add("Note", f.Name);
                 }
 
                 else
                 {
                     foreach (var n in collection)
                     {
-                        if ((n as TreeNode).Name == f.ParentId.ToString())
+                        if ((n as TreeNode).Name == f.FolderId.ToString())
                         {
-                            (n as TreeNode).Nodes.Add(f.Id.ToString(), f.Name);
+                            (n as TreeNode).Nodes.Add("Note", f.Name);
 
                             return;
                         }
-                    }
 
-                    AddFolder(collection, Folders.Find(x => x.Id == f.ParentId));
+                        AddNote((n as TreeNode).Nodes, f);
+                    }
                 }
             }
         }
 
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            //if (e.Node.Name != "Folder")
-            //{
-            //    var l = GetNodes(treeView1.Nodes);
+            if (e.Node.Name == "Note")
+            {
+                var l = GetNodes(treeView1.Nodes);
 
-            //    for (var i = 0; i < l.Count; i++)
-            //    {
-            //        if (l[i] == e.Node)
-            //        {
-            //            richTextBox1.Text = Notes[i].Content;
-            //        }
-            //    }
-            //}
+                for (var i = 0; i < l.Count; i++)
+                {
+                    if (l[i] == e.Node)
+                    {
+                        richTextBox1.Text = Notes[i].Content;
+                    }
+                }
+            }
 
-            //else
-            //{
-            //    richTextBox1.Text = "";
-            //}    
+            else
+            {
+                richTextBox1.Text = "";
+            }
         }
 
         private void treeView1_AfterCheck(object sender, TreeViewEventArgs e)
@@ -179,7 +184,7 @@ namespace Tea_Notes
 
             foreach (var n in collection)
             {
-                if ((n as TreeNode).Name == "Folder")
+                if ((n as TreeNode).Name != "Note")
                 {
                     l.AddRange(GetNodes((n as TreeNode).Nodes));
                 }
@@ -193,16 +198,55 @@ namespace Tea_Notes
 
         private void toolStripMenuItem1_Click_1(object sender, EventArgs e)
         {
-            var m = new AskNameForm("Введите название");
-            m.Show();
-            m.OK += M_OK;
+      
         }
 
         private void M_OK(string obj)
         {
-            AddNote(obj);
+            if (treeView1.SelectedNode == null)
+            {
+                AddNote(obj, 0);
 
-            UpdateView();
+                UpdateView();
+            }
+
+            else if (treeView1.SelectedNode.Name == "Note")
+            {
+                AddNote(obj, 0);
+
+                UpdateView();
+            }
+
+            else
+            {
+                AddNote(obj, int.Parse(treeView1.SelectedNode.Name));
+
+                UpdateView();
+            }
+        }
+
+        private void M_OKF(string obj)
+        {
+            if (treeView1.SelectedNode == null)
+            {
+                AddFolder(obj, 0);
+
+                UpdateView();
+            }
+
+            else if (treeView1.SelectedNode.Name == "Note")
+            {
+                AddFolder(obj, 0);
+
+                UpdateView();
+            }
+
+            else
+            {
+                AddFolder(obj, int.Parse(treeView1.SelectedNode.Name));
+
+                UpdateView();
+            }
         }
 
         private void richTextBox1_TextChanged(object sender, EventArgs e)
@@ -273,6 +317,20 @@ namespace Tea_Notes
                     }
                 }
             }
+        }
+
+        private void toolStripMenuItem5_Click(object sender, EventArgs e)
+        {
+            var m = new AskNameForm("Введите название");
+            m.Show();
+            m.OK += M_OKF;
+        }
+
+        private void toolStripMenuItem4_Click(object sender, EventArgs e)
+        {
+            var m = new AskNameForm("Введите название");
+            m.Show();
+            m.OK += M_OK;
         }
     }
 }

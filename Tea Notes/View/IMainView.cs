@@ -16,7 +16,7 @@ namespace Tea_Notes
 
         event Action<int> DeleteNote;
 
-        event Action<string> AddNote;
+        event Action<string, int> AddNote;
 
         event Action<string, int> ChangeNote;
 
@@ -25,7 +25,7 @@ namespace Tea_Notes
 
         event Action<int> DeleteFolder;
 
-        event Action<string> AddFolder;
+        event Action<string, int> AddFolder;
 
         event Action<string, int> RenameFolder;
     }
