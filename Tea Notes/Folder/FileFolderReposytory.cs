@@ -58,7 +58,7 @@ namespace Tea_Notes
 
         private int GetMaxId()
         {
-            var id = 0;
+            var id = 1;
 
             foreach (var n in Directory.GetFiles(User.Folder))
             {

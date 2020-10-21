@@ -84,8 +84,13 @@ namespace Tea_Notes
             {
                 if (f.ParentId == 0)
                 {
-                    treeView1.Nodes.Add(new TreeNode(f.Name) {Name = f.Id.ToString(), 
-                        ImageIndex = 1, SelectedImageIndex = 1 });
+                    treeView1.Nodes.Add(new TreeNode(f.Name)
+                    {
+                        Name = f.Id.ToString(),
+                        ImageIndex = 1,
+                        SelectedImageIndex = 1,
+                        ContextMenuStrip = contextMenuStrip1
+                    });
                 }
 
                 else
@@ -96,7 +101,9 @@ namespace Tea_Notes
                         {
                             (n as TreeNode).Nodes.Add(new TreeNode(f.Name) {
                                 Name = f.Id.ToString(), 
-                                ImageIndex = 1, SelectedImageIndex = 1 });
+                                ImageIndex = 1, SelectedImageIndex = 1,
+                                ContextMenuStrip = contextMenuStrip1
+                            });
 
                             return;
                         }
@@ -111,7 +118,13 @@ namespace Tea_Notes
             {
                 if (f.FolderId == 0)
                 {
-                    treeView1.Nodes.Add("Note", f.Name);
+                    treeView1.Nodes.Add(new TreeNode(f.Name)
+                    {
+                        Name = "Note",
+                        ImageIndex = 0,
+                        SelectedImageIndex = 0,
+                        ContextMenuStrip = contextMenuStrip3
+                    });
                 }
 
                 else
@@ -120,7 +133,13 @@ namespace Tea_Notes
                     {
                         if ((n as TreeNode).Name == f.FolderId.ToString())
                         {
-                            (n as TreeNode).Nodes.Add("Note", f.Name);
+                            (n as TreeNode).Nodes.Add(new TreeNode(f.Name)
+                            {
+                                Name = "Note",
+                                ImageIndex = 0,
+                                SelectedImageIndex = 0,
+                                ContextMenuStrip = contextMenuStrip3
+                            });
 
                             return;
                         }
@@ -135,7 +154,7 @@ namespace Tea_Notes
         {
             if (e.Node.Name == "Note")
             {
-                var l = GetNodes(treeView1.Nodes);
+                var l = GetNotes(treeView1.Nodes);
 
                 for (var i = 0; i < l.Count; i++)
                 {
@@ -161,24 +180,11 @@ namespace Tea_Notes
         {
             if(e.KeyCode == Keys.Delete)
             {
-                var l = GetNodes(treeView1.Nodes);
-
-                if (l.Count > 0 && treeView1.SelectedNode != null)
-                {
-                    for (var i = 0; i < l.Count; i++)
-                    {
-                        if (l[i] == treeView1.SelectedNode)
-                        {
-                            DeleteNote(i);
-
-                            UpdateView();
-                        }
-                    }
-                }
+                Delete();
             }
         }
 
-        private static List<TreeNode> GetNodes(TreeNodeCollection collection)
+        private static List<TreeNode> GetNotes(TreeNodeCollection collection)
         {
             var l = new List<TreeNode>();
 
@@ -186,13 +192,30 @@ namespace Tea_Notes
             {
                 if ((n as TreeNode).Name != "Note")
                 {
-                    l.AddRange(GetNodes((n as TreeNode).Nodes));
+                    l.AddRange(GetNotes((n as TreeNode).Nodes));
                 }
                 else
                 {
                     l.Add(n as TreeNode);
                 }
             }
+            return l;
+        }
+
+        private static List<TreeNode> GetFolders(TreeNodeCollection collection)
+        {
+            var l = new List<TreeNode>();
+
+            foreach (var n in collection)
+            {
+                if ((n as TreeNode).Name != "Note")
+                {
+                    l.Add(n as TreeNode);
+
+                    l.AddRange(GetFolders((n as TreeNode).Nodes));
+                }
+            }
+
             return l;
         }
 
@@ -255,7 +278,7 @@ namespace Tea_Notes
             {
                 var i = 0;
 
-                foreach(var n in GetNodes(treeView1.Nodes))
+                foreach(var n in GetNotes(treeView1.Nodes))
                 {
                     if(n == treeView1.SelectedNode)
                     {
@@ -285,7 +308,7 @@ namespace Tea_Notes
             {
                 var i = 0;
 
-                foreach(var n in GetNodes(treeView1.Nodes))
+                foreach(var n in GetNotes(treeView1.Nodes))
                 {
                     if(n == treeView1.SelectedNode)
                     {
@@ -303,20 +326,7 @@ namespace Tea_Notes
 
         private void toolStripMenuItem3_Click(object sender, EventArgs e)
         {
-            var l = GetNodes(treeView1.Nodes);
-
-            if (l.Count > 0 && treeView1.SelectedNode != null)
-            {
-                for (var i = 0; i < l.Count; i++)
-                {
-                    if (l[i] == treeView1.SelectedNode)
-                    {
-                        DeleteNote(i);
-
-                        UpdateView();
-                    }
-                }
-            }
+            Delete();
         }
 
         private void toolStripMenuItem5_Click(object sender, EventArgs e)
@@ -331,6 +341,76 @@ namespace Tea_Notes
             var m = new AskNameForm("Введите название");
             m.Show();
             m.OK += M_OK;
+        }
+
+        private void Delete()
+        {
+            if (treeView1.SelectedNode != null)
+            {
+                if (treeView1.SelectedNode.Name == "Note")
+                {
+                    var l = GetNotes(treeView1.Nodes);
+
+                    if (l.Count > 0 && treeView1.SelectedNode != null)
+                    {
+                        for (var i = 0; i < l.Count; i++)
+                        {
+                            if (l[i] == treeView1.SelectedNode)
+                            {
+                                DeleteNote(i);
+
+                                UpdateView();
+                            }
+                        }
+                    }
+                }
+
+                else
+                {
+                    var l = GetFolders(treeView1.Nodes);
+
+                    if (l.Count > 0 && treeView1.SelectedNode != null)
+                    {
+                        for (var i = 0; i < l.Count; i++)
+                        {
+                            if (l[i] == treeView1.SelectedNode)
+                            {
+                                DeleteFolder(i);
+
+                                UpdateView();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void toolStripMenuItem7_Click(object sender, EventArgs e)
+        {
+            var m = new AskNameForm("Введите название");
+            m.Show();
+            m.OK += q;
+
+            void q(string s)
+            {
+                AddNote(s, 0);
+
+                UpdateView();
+            }
+        }
+
+        private void toolStripMenuItem8_Click(object sender, EventArgs e)
+        {
+            var m = new AskNameForm("Введите название");
+            m.Show();
+            m.OK += q;
+
+            void q(string s)
+            {
+                AddFolder(s, 0);
+
+                UpdateView();
+            }
         }
     }
 }
