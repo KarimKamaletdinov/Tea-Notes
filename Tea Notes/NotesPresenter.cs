@@ -16,11 +16,12 @@ namespace Tea_Notes
 
         private List<FolderDTO> FolderDTOs = new List<FolderDTO>();
 
-        public void Start(IMainView view)
+        public void Start(IMainView view, INoteRepository noteRepository,
+            IFolderRepository folderRepository)
         {
-            NoteRepository = new FileNoteRepository(new FileUserRepository().Get());
+            NoteRepository = noteRepository;
 
-            FolderRepository = new FileFolderRepository(new FileUserRepository().Get());
+            FolderRepository = folderRepository;
 
             view.DeleteNote += DeleteNote;
 
@@ -35,6 +36,8 @@ namespace Tea_Notes
             view.AddFolder += AddFolder;
 
             view.RenameFolder += RenameFolder;
+
+            view.UpdateView += UpdateView;
         }
 
         public void UpdateView(IMainView view)
@@ -80,6 +83,12 @@ namespace Tea_Notes
 
         private void DeleteFolder(int obj)
         {
+            foreach (var n in NoteDTOs.ToList().Where(x => x.FolderId == FolderDTOs[obj].Id))
+            {
+                NoteRepository.Delete(n);
+                NoteDTOs.Remove(n);
+            }
+
             FolderRepository.Delete(FolderDTOs[obj]);
 
             FolderDTOs.RemoveAt(obj);
@@ -92,7 +101,9 @@ namespace Tea_Notes
 
         private void RenameFolder(string arg1, int arg2)
         {
-            
+            FolderDTOs[arg2].Name = arg1;
+
+            FolderRepository.Save(FolderDTOs[arg2]);
         }
     }
 }

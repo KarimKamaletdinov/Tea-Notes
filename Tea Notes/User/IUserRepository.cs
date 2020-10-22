@@ -10,7 +10,7 @@ namespace Tea_Notes
 {
     interface IUserRepository
     {
-        UserDTO Get();
+        List<UserDTO> GetAll();
 
         void Save(UserDTO dto);
     }

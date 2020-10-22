@@ -16,8 +16,6 @@ namespace Tea_Notes
 
         public List<FolderDTO> Folders { get; set; }
 
-        public NotesPresenter Presenter { get; set; } = new NotesPresenter();
-
         public event Action<int> DeleteNote;
 
         public event Action<string, int> AddNote;
@@ -33,6 +31,8 @@ namespace Tea_Notes
 
         public event Action<string, int> RenameFolder;
 
+        public event Action<IMainView> UpdateView;
+
 
         public Form1()
         {
@@ -41,18 +41,16 @@ namespace Tea_Notes
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            Presenter.Start(this);
-
-            UpdateView();
+            UpdateNotes();
         }
 
-        private void UpdateView()
+        private void UpdateNotes()
         {
             Notes.Clear();
 
             treeView1.Nodes.Clear();
 
-            Presenter.UpdateView(this);
+            UpdateView(this);
 
 
             var folders = Folders.ToList();
@@ -160,6 +158,7 @@ namespace Tea_Notes
                 {
                     if (l[i] == e.Node)
                     {
+                        richTextBox1.Enabled = true;
                         richTextBox1.Text = Notes[i].Content;
                     }
                 }
@@ -167,6 +166,7 @@ namespace Tea_Notes
 
             else
             {
+                richTextBox1.Enabled = false;
                 richTextBox1.Text = "";
             }
         }
@@ -224,55 +224,55 @@ namespace Tea_Notes
       
         }
 
-        private void M_OK(string obj)
+        private void AddNoteF_OK(string obj)
         {
             if (treeView1.SelectedNode == null)
             {
                 AddNote(obj, 0);
 
-                UpdateView();
+                UpdateNotes();
             }
 
             else if (treeView1.SelectedNode.Name == "Note")
             {
                 AddNote(obj, 0);
 
-                UpdateView();
+                UpdateNotes();
             }
 
             else
             {
                 AddNote(obj, int.Parse(treeView1.SelectedNode.Name));
 
-                UpdateView();
+                UpdateNotes();
             }
         }
 
-        private void M_OKF(string obj)
+        private void AddFolderF_OK(string obj)
         {
             if (treeView1.SelectedNode == null)
             {
                 AddFolder(obj, 0);
 
-                UpdateView();
+                UpdateNotes();
             }
 
             else if (treeView1.SelectedNode.Name == "Note")
             {
                 AddFolder(obj, 0);
 
-                UpdateView();
+                UpdateNotes();
             }
 
             else
             {
                 AddFolder(obj, int.Parse(treeView1.SelectedNode.Name));
 
-                UpdateView();
+                UpdateNotes();
             }
         }
 
-        private void richTextBox1_TextChanged(object sender, EventArgs e)
+        private void NoteChanged(object sender, EventArgs e)
         {
             if(treeView1.SelectedNode != null)
             {
@@ -290,57 +290,83 @@ namespace Tea_Notes
             }
         }
 
-        private void toolStripMenuItem2_Click(object sender, EventArgs e)
+        private void Rename(object sender, EventArgs e)
         {
             if (treeView1.SelectedNode != null)
             {
-                var n = new AskNameForm("Переименовать");
+                var n = new AskNameForm();
+
+                n.Question = "Переименовать";
 
                 n.Show();
 
-                n.OK += N_OK;
+                n.OK += RenameNF;
             }
         }
 
-        private void N_OK(string obj)
+        private void RenameNF(string obj)
         {
             if(treeView1.SelectedNode != null)
             {
-                var i = 0;
-
-                foreach(var n in GetNotes(treeView1.Nodes))
+                if (treeView1.SelectedNode.Name == "Note")
                 {
-                    if(n == treeView1.SelectedNode)
+                    var i = 0;
+
+                    foreach (var n in GetNotes(treeView1.Nodes))
                     {
-                        RenameNote(obj, i);
+                        if (n == treeView1.SelectedNode)
+                        {
+                            RenameNote(obj, i);
 
-                        UpdateView();
+                            UpdateNotes();
 
-                        return;
+                            return;
+                        }
+
+                        i++;
                     }
+                }
 
-                    i++;
+                else
+                {
+                    var i = 0;
+
+                    foreach (var n in GetFolders(treeView1.Nodes))
+                    {
+                        if (n == treeView1.SelectedNode)
+                        {
+                            RenameFolder(obj, i);
+
+                            UpdateNotes();
+
+                            return;
+                        }
+
+                        i++;
+                    }
                 }
             }
         }
 
-        private void toolStripMenuItem3_Click(object sender, EventArgs e)
+        private void DeleteNF(object sender, EventArgs e)
         {
             Delete();
         }
 
-        private void toolStripMenuItem5_Click(object sender, EventArgs e)
+        private void AddFolderF(object sender, EventArgs e)
         {
-            var m = new AskNameForm("Введите название");
+            var m = new AskNameForm();
+            m.Question = "Введите название";
             m.Show();
-            m.OK += M_OKF;
+            m.OK += AddFolderF_OK;
         }
 
-        private void toolStripMenuItem4_Click(object sender, EventArgs e)
+        private void AddNoteF(object sender, EventArgs e)
         {
-            var m = new AskNameForm("Введите название");
+            var m = new AskNameForm();
+            m.Question = "Введите название";
             m.Show();
-            m.OK += M_OK;
+            m.OK += AddNoteF_OK;
         }
 
         private void Delete()
@@ -359,7 +385,7 @@ namespace Tea_Notes
                             {
                                 DeleteNote(i);
 
-                                UpdateView();
+                                UpdateNotes();
                             }
                         }
                     }
@@ -377,7 +403,7 @@ namespace Tea_Notes
                             {
                                 DeleteFolder(i);
 
-                                UpdateView();
+                                UpdateNotes();
                             }
                         }
                     }
@@ -385,9 +411,10 @@ namespace Tea_Notes
             }
         }
 
-        private void toolStripMenuItem7_Click(object sender, EventArgs e)
+        private void AddNoteP(object sender, EventArgs e)
         {
-            var m = new AskNameForm("Введите название");
+            var m = new AskNameForm();
+            m.Question = "Введите название";
             m.Show();
             m.OK += q;
 
@@ -395,13 +422,14 @@ namespace Tea_Notes
             {
                 AddNote(s, 0);
 
-                UpdateView();
+                UpdateNotes();
             }
         }
 
-        private void toolStripMenuItem8_Click(object sender, EventArgs e)
+        private void AddFolderP(object sender, EventArgs e)
         {
-            var m = new AskNameForm("Введите название");
+            var m = new AskNameForm();
+            m.Question = "Введите название";
             m.Show();
             m.OK += q;
 
@@ -409,7 +437,7 @@ namespace Tea_Notes
             {
                 AddFolder(s, 0);
 
-                UpdateView();
+                UpdateNotes();
             }
         }
     }

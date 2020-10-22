@@ -116,28 +116,28 @@
             this.toolStripMenuItem4.Name = "toolStripMenuItem4";
             this.toolStripMenuItem4.Size = new System.Drawing.Size(119, 22);
             this.toolStripMenuItem4.Text = "Заметка";
-            this.toolStripMenuItem4.Click += new System.EventHandler(this.toolStripMenuItem4_Click);
+            this.toolStripMenuItem4.Click += new System.EventHandler(this.AddNoteF);
             // 
             // toolStripMenuItem5
             // 
             this.toolStripMenuItem5.Name = "toolStripMenuItem5";
             this.toolStripMenuItem5.Size = new System.Drawing.Size(119, 22);
             this.toolStripMenuItem5.Text = "Папка";
-            this.toolStripMenuItem5.Click += new System.EventHandler(this.toolStripMenuItem5_Click);
+            this.toolStripMenuItem5.Click += new System.EventHandler(this.AddFolderF);
             // 
             // toolStripMenuItem2
             // 
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
             this.toolStripMenuItem2.Size = new System.Drawing.Size(161, 22);
             this.toolStripMenuItem2.Text = "Переименовать";
-            this.toolStripMenuItem2.Click += new System.EventHandler(this.toolStripMenuItem2_Click);
+            this.toolStripMenuItem2.Click += new System.EventHandler(this.Rename);
             // 
             // toolStripMenuItem3
             // 
             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
             this.toolStripMenuItem3.Size = new System.Drawing.Size(161, 22);
             this.toolStripMenuItem3.Text = "Удалить";
-            this.toolStripMenuItem3.Click += new System.EventHandler(this.toolStripMenuItem3_Click);
+            this.toolStripMenuItem3.Click += new System.EventHandler(this.DeleteNF);
             // 
             // imageList1
             // 
@@ -154,7 +154,7 @@
             this.richTextBox1.Size = new System.Drawing.Size(472, 520);
             this.richTextBox1.TabIndex = 0;
             this.richTextBox1.Text = "";
-            this.richTextBox1.TextChanged += new System.EventHandler(this.richTextBox1_TextChanged);
+            this.richTextBox1.TextChanged += new System.EventHandler(this.NoteChanged);
             // 
             // contextMenuStrip2
             // 
@@ -177,14 +177,14 @@
             this.toolStripMenuItem7.Name = "toolStripMenuItem7";
             this.toolStripMenuItem7.Size = new System.Drawing.Size(180, 22);
             this.toolStripMenuItem7.Text = "Заметка";
-            this.toolStripMenuItem7.Click += new System.EventHandler(this.toolStripMenuItem7_Click);
+            this.toolStripMenuItem7.Click += new System.EventHandler(this.AddNoteP);
             // 
             // toolStripMenuItem8
             // 
             this.toolStripMenuItem8.Name = "toolStripMenuItem8";
             this.toolStripMenuItem8.Size = new System.Drawing.Size(180, 22);
             this.toolStripMenuItem8.Text = "Папка";
-            this.toolStripMenuItem8.Click += new System.EventHandler(this.toolStripMenuItem8_Click);
+            this.toolStripMenuItem8.Click += new System.EventHandler(this.AddFolderP);
             // 
             // contextMenuStrip3
             // 
@@ -199,14 +199,14 @@
             this.toolStripMenuItem12.Name = "toolStripMenuItem12";
             this.toolStripMenuItem12.Size = new System.Drawing.Size(161, 22);
             this.toolStripMenuItem12.Text = "Переименовать";
-            this.toolStripMenuItem12.Click += new System.EventHandler(this.toolStripMenuItem2_Click);
+            this.toolStripMenuItem12.Click += new System.EventHandler(this.Rename);
             // 
             // toolStripMenuItem13
             // 
             this.toolStripMenuItem13.Name = "toolStripMenuItem13";
             this.toolStripMenuItem13.Size = new System.Drawing.Size(161, 22);
             this.toolStripMenuItem13.Text = "Удалить";
-            this.toolStripMenuItem13.Click += new System.EventHandler(this.toolStripMenuItem3_Click);
+            this.toolStripMenuItem13.Click += new System.EventHandler(this.DeleteNF);
             // 
             // Form1
             // 

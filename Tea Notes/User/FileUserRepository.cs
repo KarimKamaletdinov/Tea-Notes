@@ -10,9 +10,16 @@ namespace Tea_Notes
 {
     class FileUserRepository : IUserRepository
     {
-        public UserDTO Get()
+        public List<UserDTO> GetAll()
         {
-            return JsonConvert.DeserializeObject<UserDTO>(File.ReadAllText("User.json"));
+            var l = new List<UserDTO>();
+            
+            foreach(var d in Directory.GetFiles("Users"))
+            {
+                l.Add(JsonConvert.DeserializeObject<UserDTO>(File.ReadAllText(d)));
+            }
+
+            return l;
         }
 
         public void Save(UserDTO dto)

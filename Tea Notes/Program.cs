@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -16,7 +17,17 @@ namespace Tea_Notes
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+
+            var f = new Form1();
+
+            var p = new NotesPresenter();
+
+            p.Start(f, new FileNoteRepository(new FileUserRepository().GetAll().Find(x => x.Id
+                    == int.Parse(File.ReadAllText("CurrentUser.txt")))),
+                new FileFolderRepository(new FileUserRepository().GetAll().Find(x => x.Id
+                    == int.Parse(File.ReadAllText("CurrentUser.txt")))));
+
+            Application.Run(f);
         }
     }
 }

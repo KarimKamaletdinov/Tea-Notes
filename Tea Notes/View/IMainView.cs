@@ -12,8 +12,6 @@ namespace Tea_Notes
 
         List<FolderDTO> Folders { get; set; }
 
-        NotesPresenter Presenter { get; set; }
-
         event Action<int> DeleteNote;
 
         event Action<string, int> AddNote;
@@ -28,5 +26,7 @@ namespace Tea_Notes
         event Action<string, int> AddFolder;
 
         event Action<string, int> RenameFolder;
+
+        event Action<IMainView> UpdateView;
     }
 }

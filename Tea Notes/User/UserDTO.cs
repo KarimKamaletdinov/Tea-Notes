@@ -9,5 +9,9 @@ namespace Tea_Notes
     class UserDTO
     {
         public string Folder { get; set; }
+
+        public string Name { get; set; }
+
+        public int Id { get; set; }
     }
 }
