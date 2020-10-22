@@ -33,6 +33,10 @@ namespace Tea_Notes
 
         public event Action<IMainView> UpdateView;
 
+        private int? _SelectedFolderId = null;
+
+        private int? _SelectedNoteId = null;
+
 
         public Form1()
         {
@@ -82,12 +86,19 @@ namespace Tea_Notes
             {
                 if (f.ParentId == 0)
                 {
+                    var m = new FolderContextMenuStrip();
+                    m.ParentId = f.Id;
+                    m.CreateFolder += AddFolderF;
+                    m.CreateNote += AddNoteF;
+                    m.Delete += DeleteF;
+                    m.Rename += RenameF;
+
                     treeView1.Nodes.Add(new TreeNode(f.Name)
                     {
                         Name = f.Id.ToString(),
                         ImageIndex = 1,
                         SelectedImageIndex = 1,
-                        ContextMenuStrip = contextMenuStrip1
+                        ContextMenuStrip = m.contextMenuStrip1
                     });
                 }
 
@@ -97,10 +108,17 @@ namespace Tea_Notes
                     {
                         if ((n as TreeNode).Name == f.ParentId.ToString())
                         {
+                            var m = new FolderContextMenuStrip();
+                            m.ParentId = f.Id;
+                            m.CreateFolder += AddFolderF;
+                            m.CreateNote += AddNoteF;
+                            m.Delete += DeleteF;
+                            m.Rename += RenameF;
+
                             (n as TreeNode).Nodes.Add(new TreeNode(f.Name) {
                                 Name = f.Id.ToString(), 
                                 ImageIndex = 1, SelectedImageIndex = 1,
-                                ContextMenuStrip = contextMenuStrip1
+                                ContextMenuStrip = m.contextMenuStrip1
                             });
 
                             return;
@@ -111,17 +129,21 @@ namespace Tea_Notes
                 }
             }
 
-
             void AddNote(TreeNodeCollection collection, NoteDTO f)
             {
                 if (f.FolderId == 0)
                 {
+                    var m = new NoteMenuStrip();
+                    m.ParentId = f.Id;
+                    m.Delete += DeleteN;
+                    m.Rename += RenameN;
+
                     treeView1.Nodes.Add(new TreeNode(f.Name)
                     {
                         Name = "Note",
                         ImageIndex = 0,
                         SelectedImageIndex = 0,
-                        ContextMenuStrip = contextMenuStrip3
+                        ContextMenuStrip = m.contextMenuStrip3
                     });
                 }
 
@@ -131,12 +153,17 @@ namespace Tea_Notes
                     {
                         if ((n as TreeNode).Name == f.FolderId.ToString())
                         {
+                            var m = new NoteMenuStrip();
+                            m.ParentId = f.Id;
+                            m.Delete += DeleteN;
+                            m.Rename += RenameN;
+
                             (n as TreeNode).Nodes.Add(new TreeNode(f.Name)
                             {
                                 Name = "Note",
                                 ImageIndex = 0,
                                 SelectedImageIndex = 0,
-                                ContextMenuStrip = contextMenuStrip3
+                                ContextMenuStrip = m.contextMenuStrip3
                             });
 
                             return;
@@ -146,6 +173,50 @@ namespace Tea_Notes
                     }
                 }
             }
+        }
+
+        private void RenameN(object sender, EventArgs e)
+        {
+            _SelectedFolderId = null;
+
+            _SelectedNoteId = (int)sender;
+
+            var n = new AskNameForm();
+
+            n.Question = "Переименовать";
+
+            n.Show();
+
+            n.OK += RenameNF;
+        }
+
+        private void DeleteN(object sender, EventArgs e)
+        {
+            DeleteNote((int)sender);
+
+            UpdateNotes();
+        }
+
+        private void RenameF(object sender, EventArgs e)
+        {
+            _SelectedNoteId = null;
+
+            _SelectedFolderId = (int)sender;
+
+            var n = new AskNameForm();
+
+            n.Question = "Переименовать";
+
+            n.Show();
+
+            n.OK += RenameNF;
+        }
+
+        private void DeleteF(object sender, EventArgs e)
+        {
+            DeleteFolder((int)sender);
+
+            UpdateNotes();
         }
 
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
@@ -226,14 +297,7 @@ namespace Tea_Notes
 
         private void AddNoteF_OK(string obj)
         {
-            if (treeView1.SelectedNode == null)
-            {
-                AddNote(obj, 0);
-
-                UpdateNotes();
-            }
-
-            else if (treeView1.SelectedNode.Name == "Note")
+            if (_SelectedFolderId == null)
             {
                 AddNote(obj, 0);
 
@@ -242,7 +306,7 @@ namespace Tea_Notes
 
             else
             {
-                AddNote(obj, int.Parse(treeView1.SelectedNode.Name));
+                AddNote(obj, (int)_SelectedFolderId);
 
                 UpdateNotes();
             }
@@ -250,14 +314,7 @@ namespace Tea_Notes
 
         private void AddFolderF_OK(string obj)
         {
-            if (treeView1.SelectedNode == null)
-            {
-                AddFolder(obj, 0);
-
-                UpdateNotes();
-            }
-
-            else if (treeView1.SelectedNode.Name == "Note")
+            if (_SelectedFolderId == null)
             {
                 AddFolder(obj, 0);
 
@@ -266,7 +323,7 @@ namespace Tea_Notes
 
             else
             {
-                AddFolder(obj, int.Parse(treeView1.SelectedNode.Name));
+                AddFolder(obj, (int)_SelectedFolderId);
 
                 UpdateNotes();
             }
@@ -306,45 +363,18 @@ namespace Tea_Notes
 
         private void RenameNF(string obj)
         {
-            if(treeView1.SelectedNode != null)
+            if(_SelectedFolderId != null)
             {
-                if (treeView1.SelectedNode.Name == "Note")
-                {
-                    var i = 0;
+                RenameFolder(obj, (int)_SelectedFolderId);
 
-                    foreach (var n in GetNotes(treeView1.Nodes))
-                    {
-                        if (n == treeView1.SelectedNode)
-                        {
-                            RenameNote(obj, i);
+                UpdateNotes();
+            }
 
-                            UpdateNotes();
+            if(_SelectedNoteId != null)
+            {
+                RenameNote(obj, (int)_SelectedNoteId);
 
-                            return;
-                        }
-
-                        i++;
-                    }
-                }
-
-                else
-                {
-                    var i = 0;
-
-                    foreach (var n in GetFolders(treeView1.Nodes))
-                    {
-                        if (n == treeView1.SelectedNode)
-                        {
-                            RenameFolder(obj, i);
-
-                            UpdateNotes();
-
-                            return;
-                        }
-
-                        i++;
-                    }
-                }
+                UpdateNotes();
             }
         }
 
@@ -355,6 +385,7 @@ namespace Tea_Notes
 
         private void AddFolderF(object sender, EventArgs e)
         {
+            _SelectedFolderId = (int)sender;
             var m = new AskNameForm();
             m.Question = "Введите название";
             m.Show();
@@ -363,6 +394,7 @@ namespace Tea_Notes
 
         private void AddNoteF(object sender, EventArgs e)
         {
+            _SelectedFolderId = (int)sender;
             var m = new AskNameForm();
             m.Question = "Введите название";
             m.Show();
@@ -395,17 +427,11 @@ namespace Tea_Notes
                 {
                     var l = GetFolders(treeView1.Nodes);
 
-                    if (l.Count > 0 && treeView1.SelectedNode != null)
+                    if (treeView1.SelectedNode != null)
                     {
-                        for (var i = 0; i < l.Count; i++)
-                        {
-                            if (l[i] == treeView1.SelectedNode)
-                            {
-                                DeleteFolder(i);
+                        DeleteFolder(int.Parse(treeView1.SelectedNode.Name));
 
-                                UpdateNotes();
-                            }
-                        }
+                        UpdateNotes();
                     }
                 }
             }
@@ -439,6 +465,11 @@ namespace Tea_Notes
 
                 UpdateNotes();
             }
+        }
+
+        private void treeView1_MouseClick(object sender, MouseEventArgs e)
+        {
+
         }
     }
 }

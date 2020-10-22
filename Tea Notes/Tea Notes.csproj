@@ -58,6 +58,18 @@
     <Compile Include="Folder\FileFolderReposytory.cs" />
     <Compile Include="Folder\FolderDTO.cs" />
     <Compile Include="Folder\IFolderRepository.cs" />
+    <Compile Include="FolderContextMenuStrip.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FolderContextMenuStrip.Designer.cs">
+      <DependentUpon>FolderContextMenuStrip.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NoteMenuStrip.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="NoteMenuStrip.Designer.cs">
+      <DependentUpon>NoteMenuStrip.cs</DependentUpon>
+    </Compile>
     <Compile Include="User\FileUserRepository.cs" />
     <Compile Include="User\IUserRepository.cs" />
     <Compile Include="User\UserDTO.cs" />
@@ -76,6 +88,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="AskNameForm.resx">
       <DependentUpon>AskNameForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FolderContextMenuStrip.resx">
+      <DependentUpon>FolderContextMenuStrip.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NoteMenuStrip.resx">
+      <DependentUpon>NoteMenuStrip.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="View\Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>

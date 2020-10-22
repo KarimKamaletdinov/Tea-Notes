@@ -56,9 +56,9 @@ namespace Tea_Notes
 
         private void RenameNote(string arg1, int arg2)
         {
-            NoteDTOs[arg2].Name = arg1;
+            NoteDTOs.Find(x => x.Id == arg2).Name = arg1;
 
-            NoteRepository.Save(NoteDTOs[arg2]);
+            NoteRepository.Save(NoteDTOs.Find(x => x.Id == arg2));
         }
 
         private void ChangeNote(string arg1, int arg2)
@@ -75,23 +75,29 @@ namespace Tea_Notes
 
         private void DeleteNote(int obj)
         {
-            NoteRepository.Delete(NoteDTOs[obj]);
+            NoteRepository.Delete(NoteDTOs.Find(x => x.Id == obj));
 
-            NoteDTOs.RemoveAt(obj);
+            NoteDTOs.Remove(NoteDTOs.Find(x => x.Id == obj));
         }
 
 
         private void DeleteFolder(int obj)
         {
-            foreach (var n in NoteDTOs.ToList().Where(x => x.FolderId == FolderDTOs[obj].Id))
+            foreach (var n in NoteDTOs.ToList().Where(x => x.FolderId == obj))
             {
                 NoteRepository.Delete(n);
                 NoteDTOs.Remove(n);
             }
 
-            FolderRepository.Delete(FolderDTOs[obj]);
+            foreach (var n in FolderDTOs.ToList().Where(x => x.ParentId == obj))
+            {
+                FolderRepository.Delete(n);
+                FolderDTOs.Remove(n);
+            }
 
-            FolderDTOs.RemoveAt(obj);
+            FolderRepository.Delete(FolderDTOs.Find(x => x.Id == obj));
+
+            FolderDTOs.Remove(FolderDTOs.Find(x => x.Id == obj));
         }
 
         private void AddFolder(string obj, int i)
@@ -101,9 +107,9 @@ namespace Tea_Notes
 
         private void RenameFolder(string arg1, int arg2)
         {
-            FolderDTOs[arg2].Name = arg1;
+            FolderDTOs.Find(x=>x.Id == arg2).Name = arg1;
 
-            FolderRepository.Save(FolderDTOs[arg2]);
+            FolderRepository.Save(FolderDTOs.Find(x => x.Id == arg2));
         }
     }
 }
