@@ -19,7 +19,7 @@ namespace Tea_Notes
         public void Save(FolderDTO dto)
         {
             File.WriteAllText(User.Folder + "\\" + dto.Id + ".fd", dto.Name +
-                "¨" + dto.ParentId);
+                "¨" + dto.ParentId + "¨" + dto.ParentId + "¨" + User.Id);
         }
 
         public void Delete(FolderDTO dto)
@@ -37,7 +37,7 @@ namespace Tea_Notes
                 l.Add(ParseDTO(f));
             }
 
-            return l.ToArray();
+            return l.Where(x => x.UserId == User.Id).ToArray();
         }
 
         private static FolderDTO ParseDTO(string f)
@@ -46,6 +46,7 @@ namespace Tea_Notes
             {
                 Name = File.ReadAllText(f).Split(new char[] { '¨' })[0],
                 ParentId = int.Parse(File.ReadAllText(f).Split(new char[] { '¨' })[1]),
+                UserId = int.Parse(File.ReadAllText(f).Split(new char[] { '¨' })[2]),
                 Id = int.Parse(f.Replace("Notes\\", "").Replace(".fd", ""))
             };
         }
@@ -53,7 +54,7 @@ namespace Tea_Notes
         public void Add(FolderDTO dto)
         {
             File.WriteAllText(User.Folder + "\\" + GetMaxId() + ".fd", dto.Name +
-              "¨" + dto.ParentId);
+              "¨" + dto.ParentId + "¨" + User.Id);
         }
 
         private int GetMaxId()

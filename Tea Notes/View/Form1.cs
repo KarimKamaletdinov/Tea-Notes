@@ -81,7 +81,6 @@ namespace Tea_Notes
 
             treeView1.ExpandAll();
 
-
             void AddFolder(TreeNodeCollection collection, FolderDTO f)
             {
                 if (f.ParentId == 0)
@@ -140,7 +139,7 @@ namespace Tea_Notes
 
                     treeView1.Nodes.Add(new TreeNode(f.Name)
                     {
-                        Name = "Note",
+                        Name = "Note" + f.Id,
                         ImageIndex = 0,
                         SelectedImageIndex = 0,
                         ContextMenuStrip = m.contextMenuStrip3
@@ -221,18 +220,11 @@ namespace Tea_Notes
 
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            if (e.Node.Name == "Note")
+            if (e.Node.Name.StartsWith("Note"))
             {
-                var l = GetNotes(treeView1.Nodes);
-
-                for (var i = 0; i < l.Count; i++)
-                {
-                    if (l[i] == e.Node)
-                    {
-                        richTextBox1.Enabled = true;
-                        richTextBox1.Text = Notes[i].Content;
-                    }
-                }
+                richTextBox1.Enabled = true;
+                richTextBox1.Text = Notes.Find(x => x.Id.ToString() == 
+                    e.Node.Name.Replace("Note", "")).Content;
             }
 
             else
@@ -333,16 +325,10 @@ namespace Tea_Notes
         {
             if(treeView1.SelectedNode != null)
             {
-                var i = 0;
-
-                foreach(var n in GetNotes(treeView1.Nodes))
+                if (treeView1.SelectedNode.Name.StartsWith("Note"))
                 {
-                    if(n == treeView1.SelectedNode)
-                    {
-                        ChangeNote(richTextBox1.Text, i);
-                    }
-
-                    i++;
+                    ChangeNote(richTextBox1.Text, Notes.Find(x => x.Id.ToString() ==
+                        treeView1.SelectedNode.Name.Replace("Note", "")).Id);
                 }
             }
         }
@@ -405,34 +391,19 @@ namespace Tea_Notes
         {
             if (treeView1.SelectedNode != null)
             {
-                if (treeView1.SelectedNode.Name == "Note")
+                if (treeView1.SelectedNode.Name.StartsWith("Note"))
                 {
-                    var l = GetNotes(treeView1.Nodes);
+                    DeleteNote(Notes.Find(x => x.Id.ToString() ==
+                    treeView1.SelectedNode.Name.Replace("Note", "")).Id);
 
-                    if (l.Count > 0 && treeView1.SelectedNode != null)
-                    {
-                        for (var i = 0; i < l.Count; i++)
-                        {
-                            if (l[i] == treeView1.SelectedNode)
-                            {
-                                DeleteNote(i);
-
-                                UpdateNotes();
-                            }
-                        }
-                    }
+                    UpdateNotes();
                 }
 
                 else
-                {
-                    var l = GetFolders(treeView1.Nodes);
+                {                  
+                    DeleteFolder(int.Parse(treeView1.SelectedNode.Name));
 
-                    if (treeView1.SelectedNode != null)
-                    {
-                        DeleteFolder(int.Parse(treeView1.SelectedNode.Name));
-
-                        UpdateNotes();
-                    }
+                    UpdateNotes();
                 }
             }
         }
@@ -468,6 +439,11 @@ namespace Tea_Notes
         }
 
         private void treeView1_MouseClick(object sender, MouseEventArgs e)
+        {
+
+        }
+
+        private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
 
         }

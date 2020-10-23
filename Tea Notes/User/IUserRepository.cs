@@ -13,5 +13,9 @@ namespace Tea_Notes
         List<UserDTO> GetAll();
 
         void Save(UserDTO dto);
+
+        void Delete(UserDTO dto);
+
+        void Add(UserDTO dto);
     }
 }

@@ -22,9 +22,9 @@ namespace Tea_Notes
 
             var p = new NotesPresenter();
 
-            p.Start(f, new FileNoteRepository(new FileUserRepository().GetAll().Find(x => x.Id
+            p.Start(f, new SqlNoteRepository(new SqlUserRepository().GetAll().Find(x => x.Id
                     == int.Parse(File.ReadAllText("CurrentUser.txt")))),
-                new FileFolderRepository(new FileUserRepository().GetAll().Find(x => x.Id
+                new SqlFolderRepository(new SqlUserRepository().GetAll().Find(x => x.Id
                     == int.Parse(File.ReadAllText("CurrentUser.txt")))));
 
             Application.Run(f);

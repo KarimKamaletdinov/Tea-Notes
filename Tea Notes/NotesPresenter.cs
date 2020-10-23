@@ -63,9 +63,9 @@ namespace Tea_Notes
 
         private void ChangeNote(string arg1, int arg2)
         {
-            NoteDTOs[arg2].Content = arg1;
+            NoteDTOs.Find(x => x.Id == arg2).Content = arg1;
 
-            NoteRepository.Save(NoteDTOs[arg2]);
+            NoteRepository.Save(NoteDTOs.Find(x => x.Id == arg2));
         }
 
         private void AddNote(string obj, int i)

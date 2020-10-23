@@ -33,6 +33,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Dapper, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapper.2.0.35\lib\net461\Dapper.dll</HintPath>
+    </Reference>
+    <Reference Include="Dapper.Contrib, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapper.Contrib.2.0.35\lib\net461\Dapper.Contrib.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -49,6 +55,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="About.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="About.Designer.cs">
+      <DependentUpon>About.cs</DependentUpon>
+    </Compile>
     <Compile Include="AskNameForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -64,14 +76,16 @@
     <Compile Include="FolderContextMenuStrip.Designer.cs">
       <DependentUpon>FolderContextMenuStrip.cs</DependentUpon>
     </Compile>
+    <Compile Include="Folder\SqlFolderRepository.cs" />
     <Compile Include="NoteMenuStrip.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="NoteMenuStrip.Designer.cs">
       <DependentUpon>NoteMenuStrip.cs</DependentUpon>
     </Compile>
-    <Compile Include="User\FileUserRepository.cs" />
+    <Compile Include="Note\SqlNoteRepository.cs" />
     <Compile Include="User\IUserRepository.cs" />
+    <Compile Include="User\SqlUserRepository.cs" />
     <Compile Include="User\UserDTO.cs" />
     <Compile Include="Note\FileNoteRepository.cs" />
     <Compile Include="View\Form1.cs">
@@ -86,6 +100,9 @@
     <Compile Include="NotesPresenter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="About.resx">
+      <DependentUpon>About.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="AskNameForm.resx">
       <DependentUpon>AskNameForm.cs</DependentUpon>
     </EmbeddedResource>

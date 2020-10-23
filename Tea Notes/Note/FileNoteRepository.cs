@@ -19,7 +19,7 @@ namespace Tea_Notes
         public void Save(NoteDTO dto)
         {
             File.WriteAllText(User.Folder + "\\" + dto.Id + ".nt", dto.Name + '¨' 
-                + dto.Content + '¨' + dto.FolderId);
+                + dto.Content + '¨' + dto.FolderId + '¨' + User.Id);
         }
 
         public void Delete(NoteDTO dto)
@@ -37,24 +37,25 @@ namespace Tea_Notes
                 l.Add(ParseDTO(f));
             }
 
-            return l.ToArray();
+            return l.Where(x => x.UserId == User.Id).ToArray();
         }
 
         public void Add(NoteDTO dto)
         {
             File.WriteAllText(User.Folder + "\\" + GetMaxId() + ".nt", dto.Name + '¨'
-              + dto.Content + '¨' + dto.FolderId);
+              + dto.Content + '¨' + dto.FolderId + '¨' + User.Id);
         }
 
         private NoteDTO ParseDTO(string f)
         {
-            if (File.ReadAllText(f).Split(new char[] { '¨' }).Length == 3)
+            if (File.ReadAllText(f).Split(new char[] { '¨' }).Length == 4)
             {
                 return new NoteDTO()
                 {
                     Name = File.ReadAllText(f).Split(new char[] { '¨' })[0],
                     Content = File.ReadAllText(f).Split(new char[] { '¨' })[1],
                     FolderId = int.Parse(File.ReadAllText(f).Split(new char[] { '¨' })[2]),
+                    UserId = int.Parse(File.ReadAllText(f).Split(new char[] { '¨' })[3]),
                     Id = int.Parse(f.Replace(User.Folder + "\\", "").Replace(".nt", ""))
                 };
             }
